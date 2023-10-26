@@ -190,6 +190,10 @@ class NalogAPI {
         quantity: Number(quantity)
       }];
     }
+
+    const totalAmount = services
+      .reduce((sum, service) => sum + service.amount * service.quantity, 0)
+      .toFixed(2);
     
     const response = await this.call('income', {
       paymentType: 'CASH',
@@ -199,9 +203,8 @@ class NalogAPI {
       requestTime: this.dateToLocalISO(),
       operationTime: this.dateToLocalISO(date),
 
-      services: services,
-
-      totalAmount: (amount * quantity).toFixed(2)
+      services,
+      totalAmount,
     })
 
     if (!response || !response.approvedReceiptUuid) {
