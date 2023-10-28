@@ -10,7 +10,18 @@ interface NalogAPIParamsNoLogin {
   autologin: false;
 }
 
-export type NalogAPIParams = NalogAPIParamsAutologin | NalogAPIParamsNoLogin;
+export interface AuthInfo {
+  token: string;
+  refreshToken: string;
+  tokenExpiresIn: string;
+}
+
+function isAuthInfo(arg0: any): arg0 is AuthInfo {
+  const authInfo = arg0 as AuthInfo;
+  return !!authInfo.token && !!authInfo.refreshToken && !!authInfo.tokenExpiresIn;
+}
+
+export type NalogAPIParams = NalogAPIParamsAutologin | NalogAPIParamsNoLogin | AuthInfo;
 
 interface IncomeCommon {
   date?: Date;
@@ -56,11 +67,17 @@ export default class NalogAPI {
   constructor(params: NalogAPIParams) {
     this.sourceDeviceId = this.createDeviceId();
 
-    // Для ожидания завершения авторизации перед отправкой других запросов к api
-    this.authPromise = null;
+    if (isAuthInfo(params)) {
+      this.token = params.token;
+      this.refreshToken = params.refreshToken;
+      this.tokenExpireIn = params.tokenExpiresIn;
+    } else {
+      // Для ожидания завершения авторизации перед отправкой других запросов к api
+      this.authPromise = null;
 
-    if (params.autologin) {
-      this.auth(params.login, params.password);
+      if (params.autologin) {
+        this.auth(params.login, params.password);
+      }
     }
   }
 
@@ -71,6 +88,18 @@ export default class NalogAPI {
     return (
       Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     );
+  }
+
+  getAuthInfo(): AuthInfo {
+    if (!this.token || !this.refreshToken || !this.tokenExpireIn) {
+      throw new Error('Missing auth information');
+    }
+
+    return {
+      token: this.token,
+      refreshToken: this.refreshToken,
+      tokenExpiresIn: this.tokenExpireIn,
+    }
   }
 
   auth(login: string, password: string) {
