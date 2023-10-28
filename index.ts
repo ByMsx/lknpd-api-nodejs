@@ -14,9 +14,10 @@ export interface AuthInfo {
   token: string;
   refreshToken: string;
   tokenExpiresIn: string;
+  deviceId: string;
 }
 
-function isAuthInfo(arg0: any): arg0 is AuthInfo {
+function isAuthInfo(arg0: unknown): arg0 is AuthInfo {
   const authInfo = arg0 as AuthInfo;
   return !!authInfo.token && !!authInfo.refreshToken && !!authInfo.tokenExpiresIn;
 }
@@ -49,7 +50,9 @@ export interface ErrorResponse {
   error: string;
 }
 
-function isMultipleIncomeParams(arg0: AddIncomeParams | AddMultipleIncomeParams): arg0 is AddMultipleIncomeParams {
+function isMultipleIncomeParams(
+  arg0: AddIncomeParams | AddMultipleIncomeParams,
+): arg0 is AddMultipleIncomeParams {
   return !!(arg0 as AddMultipleIncomeParams).services;
 }
 
@@ -65,15 +68,15 @@ export default class NalogAPI {
   private inn: string;
 
   constructor(params: NalogAPIParams) {
-    this.sourceDeviceId = this.createDeviceId();
-
     if (isAuthInfo(params)) {
       this.token = params.token;
       this.refreshToken = params.refreshToken;
       this.tokenExpireIn = params.tokenExpiresIn;
+      this.sourceDeviceId = params.deviceId;
     } else {
       // Для ожидания завершения авторизации перед отправкой других запросов к api
       this.authPromise = null;
+      this.sourceDeviceId = this.createDeviceId();
 
       if (params.autologin) {
         this.auth(params.login, params.password);
@@ -99,7 +102,8 @@ export default class NalogAPI {
       token: this.token,
       refreshToken: this.refreshToken,
       tokenExpiresIn: this.tokenExpireIn,
-    }
+      deviceId: this.sourceDeviceId,
+    };
   }
 
   auth(login: string, password: string) {
