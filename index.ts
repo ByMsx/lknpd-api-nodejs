@@ -22,7 +22,7 @@ function isAuthInfo(arg0: unknown): arg0 is AuthInfo {
   return !!authInfo.token && !!authInfo.refreshToken && !!authInfo.tokenExpiresIn;
 }
 
-export type NalogAPIParams = NalogAPIParamsAutologin | NalogAPIParamsNoLogin | AuthInfo;
+export type NalogAPIParams = Partial<(NalogAPIParamsAutologin | NalogAPIParamsNoLogin) & AuthInfo>;
 
 interface IncomeCommon {
   date?: Date;
@@ -68,19 +68,14 @@ export default class NalogAPI {
   private inn: string;
 
   constructor(params: NalogAPIParams) {
-    if (isAuthInfo(params)) {
-      this.token = params.token;
-      this.refreshToken = params.refreshToken;
-      this.tokenExpireIn = params.tokenExpiresIn;
-      this.sourceDeviceId = params.deviceId;
-    } else {
-      // Для ожидания завершения авторизации перед отправкой других запросов к api
-      this.authPromise = null;
-      this.sourceDeviceId = this.createDeviceId();
+    this.token = params.token;
+    this.refreshToken = params.refreshToken;
+    this.tokenExpireIn = params.tokenExpiresIn;
+    this.sourceDeviceId = params.deviceId ?? this.createDeviceId();
+    this.authPromise = null;
 
-      if (params.autologin) {
-        this.auth(params.login, params.password);
-      }
+    if (params.autologin) {
+      this.auth(params.login, params.password);
     }
   }
 
@@ -170,7 +165,7 @@ export default class NalogAPI {
     });
 
     const { challengeToken } = await smsRequest.json();
-    return challengeToken;
+    return { challengeToken, phone, deviceId: this.sourceDeviceId };
   }
 
   async authViaSmsCode(code: string, challengeToken: string, phone: string) {
