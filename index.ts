@@ -11,6 +11,7 @@ interface NalogAPIParamsNoLogin {
 }
 
 export interface AuthInfo {
+  inn: string;
   token: string;
   refreshToken: string;
   tokenExpiresIn: string;
@@ -63,6 +64,7 @@ export default class NalogAPI {
   private inn: string;
 
   constructor(params: NalogAPIParams) {
+    this.inn = params.inn;
     this.token = params.token;
     this.refreshToken = params.refreshToken;
     this.tokenExpireIn = params.tokenExpiresIn;
