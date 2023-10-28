@@ -2,8 +2,15 @@
   "name": "moy-nalog",
   "version": "1.0.6",
   "description": "Обёртка для API сервиса lknpd.nalog.ru",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "postinstall": "npm run build",
+    "build": "tsup",
     "lint": "eslint index.ts",
     "lint:fix": "eslint --fix index.ts"
   },
@@ -27,6 +34,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "prettier": "^3.0.3",
+    "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   }
 }
