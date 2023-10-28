@@ -17,11 +17,6 @@ export interface AuthInfo {
   deviceId: string;
 }
 
-function isAuthInfo(arg0: unknown): arg0 is AuthInfo {
-  const authInfo = arg0 as AuthInfo;
-  return !!authInfo.token && !!authInfo.refreshToken && !!authInfo.tokenExpiresIn;
-}
-
 export type NalogAPIParams = Partial<(NalogAPIParamsAutologin | NalogAPIParamsNoLogin) & AuthInfo>;
 
 interface IncomeCommon {

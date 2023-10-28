@@ -1,7 +1,7 @@
 {
-  "name": "moy-nalog",
-  "version": "1.0.6",
-  "description": "Обёртка для API сервиса lknpd.nalog.ru",
+  "name": "lknpd-api",
+  "version": "1.3.1",
+  "description": "Класс для API сервиса lknpd.nalog.ru",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -9,22 +9,21 @@
     "dist"
   ],
   "scripts": {
-    "postinstall": "npm run build",
     "build": "tsup",
     "lint": "eslint index.ts",
     "lint:fix": "eslint --fix index.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexstep/moy-nalog.git"
+    "url": "git+https://github.com/ByMsx/moy-nalog.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alexstep/moy-nalog/issues"
+    "url": "https://github.com/ByMsx/moy-nalog/issues"
   },
-  "homepage": "https://github.com/alexstep/moy-nalog#readme",
+  "homepage": "https://github.com/ByMsx/moy-nalog#readme",
   "dependencies": {
     "cross-fetch": "^3.1.5"
   },

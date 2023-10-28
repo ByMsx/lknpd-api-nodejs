@@ -1,27 +1,33 @@
 # Создание чеков в налоговой
 Неофициальная обёртка для API сервиса lknpd.nalog.ru на nodejs.
 
-Реализия на php - https://github.com/shoman4eg/moy-nalog
-
 Служит для автоматизации отправки информации о доходах самозанятых и получения информации о созданных чеках.
-
-Подбробную информацию о налоге на профессиональный доход и правил выдачи чеков можете посмотреть по ссылкам в [wiki](https://github.com/alexstep/moy-nalog/wiki)
-
-![codeexample](https://user-images.githubusercontent.com/1881684/111181224-cd534900-85be-11eb-92b2-1cdc8f9fc80e.png)
-
 
 ## Использование
 Установите пакет
 ```bash
-npm i moy-nalog
+npm i lknpd-api
 ```
 
 
 Инициализаци и авторизация
 ```javascript
-const moyNalog = require('moy-nalog')
+import NalogAPI from 'lknpd-api';
 
-const nalogAPI = new moyNalog({ username:'23456789', password: 'your_pass' })
+const nalogAPI = new NalogApi({ username:'23456789', password: 'your_pass' })
+```
+
+Также возможна авторизация по SMS
+```typescript
+import input from 'input'; // не забудьте установить пакет
+import NalogAPI from 'lknpd-api';
+
+const phone = '79991234567';
+const nalogApi = new NalogApi({ autologin: false });
+
+const { challengeToken } = await nalogApi.requestSmsCode(phone);
+await nalogApi.authViaSmsCode(code, challengeToken, phone);
+
 ```
 
 Отправка информации о доходе
