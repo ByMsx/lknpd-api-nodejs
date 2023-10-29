@@ -63,6 +63,16 @@ export default class NalogAPI {
 
   private inn: string;
 
+  /**
+   * Создать экземпляр класса API и обновить токен
+   * @param authInfo {AuthInfo}
+   */
+  static async refreshAuthInfo(authInfo: AuthInfo): Promise<AuthInfo> {
+    const api = new NalogAPI(authInfo);
+    await api.refreshTokenRequest();
+    return api.getAuthInfo();
+  }
+
   constructor(params: NalogAPIParams) {
     this.inn = params.inn;
     this.token = params.token;
@@ -91,6 +101,7 @@ export default class NalogAPI {
     }
 
     return {
+      inn: this.inn,
       token: this.token,
       refreshToken: this.refreshToken,
       tokenExpiresIn: this.tokenExpireIn,
@@ -206,7 +217,7 @@ export default class NalogAPI {
       });
   }
 
-  async getToken() {
+  async getToken(force?:) {
     if (
       this.token &&
       this.tokenExpireIn &&
@@ -219,39 +230,7 @@ export default class NalogAPI {
       throw new Error('Необходимо сначала авторизоваться');
     }
 
-    const tokenPayload = {
-      deviceInfo: {
-        appVersion: '1.0.0',
-        sourceDeviceId: this.sourceDeviceId,
-        sourceType: 'WEB',
-        metaDetails: {
-          userAgent:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36',
-        },
-      },
-      refreshToken: this.refreshToken,
-    };
-
-    const response = await fetch(this.apiUrl + '/auth/token', {
-      method: 'POST',
-      headers: {
-        accept: 'application/json, text/plain, */*',
-        'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-        'content-type': 'application/json',
-      },
-      referrer: 'https://lknpd.nalog.ru/sales',
-      referrerPolicy: 'strict-origin-when-cross-origin',
-      body: JSON.stringify(tokenPayload),
-    })
-      .then(r => r.json())
-      .catch(console.error);
-
-    if (response.refreshToken) {
-      this.refreshToken = response.refreshToken;
-    }
-
-    this.token = response.token;
-    this.tokenExpireIn = response.tokenExpireIn;
+    this.refreshTokenRequest();
 
     return this.token;
   }
@@ -344,5 +323,41 @@ export default class NalogAPI {
       ':' +
       (absoff % 60).toString().padStart(2, '0')
     );
+  }
+
+  private refreshTokenRequest() {
+    const tokenPayload = {
+      deviceInfo: {
+        appVersion: '1.0.0',
+        sourceDeviceId: this.sourceDeviceId,
+        sourceType: 'WEB',
+        metaDetails: {
+          userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36',
+        },
+      },
+      refreshToken: this.refreshToken,
+    };
+
+    const response = await fetch(this.apiUrl + '/auth/token', {
+      method: 'POST',
+      headers: {
+        accept: 'application/json, text/plain, */*',
+        'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+        'content-type': 'application/json',
+      },
+      referrer: 'https://lknpd.nalog.ru/sales',
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      body: JSON.stringify(tokenPayload),
+    })
+      .then(r => r.json())
+      .catch(console.error);
+
+    if (response.refreshToken) {
+      this.refreshToken = response.refreshToken;
+    }
+
+    this.token = response.token;
+    this.tokenExpireIn = response.tokenExpireIn;
   }
 }
