@@ -27,17 +27,15 @@ const nalogApi = new NalogApi({ autologin: false });
 
 const { challengeToken } = await nalogApi.requestSmsCode(phone);
 await nalogApi.authViaSmsCode(code, challengeToken, phone);
-
 ```
 
 Отправка информации о доходе
 ```javascript
-nalogAPI.addIncome({ name:'Предоставление информационных услуг', amount: 99.99 }).then( receipt => {
-  console.log(receipt.id, receipt.data)
-
-  // ссылка на картинку с чеком
-  return receipt.printUrl
-}).catch(console.error)
+const { id, printUrl, data, jsonUrl } = await nalogApi.addIncome({ name:'Предоставление информационных услуг', amount: 99.99 });
+```
+Если у вас несколько операций, то вы можете указать их в поле:
+```typescript
+const { id, printUrl, data, jsonUrl } = await nalogApi.addIncome({ services: [{ name: 'Test', amount: 10, quantity: 2 }, { name: 'Test 2', amount: 14, quantity: 1 }] });
 ```
 
 ### Примеры
