@@ -71,10 +71,4 @@ const stats = await nalogAPI.call('incomes/summary').catch(console.error)
 ```
 
 
-[Подробное описание методов класса](/docs/nalogAPIClass.md)
-
-
-## Донаты
-Если вам помогла эта библиотка можете [пожертвовать автору немного денег](https://yoomoney.ru/to/41001265749624  )
-
 
