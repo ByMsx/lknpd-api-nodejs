@@ -217,7 +217,7 @@ export default class NalogAPI {
       });
   }
 
-  async getToken(force?:) {
+  async getToken() {
     if (
       this.token &&
       this.tokenExpireIn &&
@@ -230,7 +230,7 @@ export default class NalogAPI {
       throw new Error('Необходимо сначала авторизоваться');
     }
 
-    this.refreshTokenRequest();
+    await this.refreshTokenRequest();
 
     return this.token;
   }
@@ -325,7 +325,7 @@ export default class NalogAPI {
     );
   }
 
-  private refreshTokenRequest() {
+  private async refreshTokenRequest() {
     const tokenPayload = {
       deviceInfo: {
         appVersion: '1.0.0',
