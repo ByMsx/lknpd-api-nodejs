@@ -1,6 +1,6 @@
 {
   "name": "lknpd-api",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Класс для API сервиса lknpd.nalog.ru",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
