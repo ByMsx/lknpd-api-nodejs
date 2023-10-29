@@ -15,15 +15,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ByMsx/moy-nalog.git"
+    "url": "git+https://github.com/ByMsx/lknpd-api-nodejs.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ByMsx/moy-nalog/issues"
+    "url": "https://github.com/ByMsx/lknpd-api-nodejs/issues"
   },
-  "homepage": "https://github.com/ByMsx/moy-nalog#readme",
+  "homepage": "https://github.com/ByMsx/lknpd-api-nodejs#readme",
   "dependencies": {
     "cross-fetch": "^3.1.5"
   },
